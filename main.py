@@ -28,7 +28,5 @@ def main():
     trainer.train(train_x, train_y, validate_x, validate_y)
     test_yp = trainer.predict(test_x)
 
-#   data.calculate_accuracy, precision, show images, and other stuff
-
 if __name__ == '__main__':
     main()

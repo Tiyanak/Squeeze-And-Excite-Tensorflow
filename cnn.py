@@ -55,21 +55,18 @@ class CNN():
 
             print("EPOCH STATISTICS : ")
 
-            train_loss, train_acc = self.log_eval(epoch_num, train_x, train_y)
-            valid_loss, valid_acc = self.log_eval(epoch_num, valid_x, valid_y)
+            train_loss, train_acc = self.validate(epoch_num, train_x, train_y, "Train")
+            valid_loss, valid_acc = self.validate(epoch_num, valid_x, valid_y, "Validation")
 
-            # lr = self.sess.run([self.model.learning_rate], feed_dict={})
+            lr = self.sess.run([self.model.learning_rate])
 
             plot_data['train_loss'] += [train_loss]
             plot_data['valid_loss'] += [valid_loss]
             plot_data['train_acc'] += [train_acc]
             plot_data['valid_acc'] += [valid_acc]
-            plot_data['lr'] += [constant.config['learning_rate']]
-            util.plot_training_progress(constant.PLOT_TRAINING_SAVE_DIR, plot_data)
+            plot_data['lr'] += [lr]
 
-    def validate(self, config, validate_x, validate_y):
-
-        pass
+        util.plot_training_progress(constant.PLOT_TRAINING_SAVE_DIR, plot_data)
 
     def predict(self, X):
 
@@ -82,10 +79,35 @@ class CNN():
         format_str = 'epoch %d, step %d / %d, loss = %.2f (%.3f sec/batch)'
         print(format_str % (epoch, (step_batch + 1) * batch_size, total_batches, loss, sec_per_batch))
 
-    def log_eval(self, epoch, inputs, labels):
+    def validate(self, epoch, inputs, labels, dataset_type="Unknown"):
 
-        loss, preds = self.sess.run([self.model.loss, self.model.prediction], feed_dict={self.model.X: inputs, self.model.Yoh: labels})
-        acc, pr = util.eval_perf_multi(np.argmax(labels, axis=1), np.argmax(preds, axis=1))
-        print("Validation error: epoch {} loss={} accuracy={} precision={}".format(epoch, loss, acc, pr))
+        num_examples = inputs.shape[0]
+        batch_size = constant.config['batch_size']
+        num_batches = num_examples // batch_size
+
+        losses = []
+        eval_preds = []
+
+        for step in range(num_batches):
+
+            offset = step * batch_size
+
+            batch_x = inputs[offset:(offset + batch_size), ...]
+            batch_y = labels[offset:(offset + batch_size)]
+
+            feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
+            run_ops = [self.model.loss, self.model.prediction]
+
+            ret_val = self.sess.run(run_ops, feed_dict=feed_dict)
+            loss, preds = ret_val
+
+            losses.append(loss)
+            eval_preds.append(preds)
+
+        eval_preds = np.vstack(eval_preds)
+        total_loss = np.mean(losses)
+
+        acc, pr = util.eval_perf_multi(np.argmax(labels, axis=1), np.argmax(eval_preds, axis=1))
+        print("{} error: epoch {} loss={} accuracy={}".format(dataset_type, epoch, total_loss, acc))
 
         return loss, acc
