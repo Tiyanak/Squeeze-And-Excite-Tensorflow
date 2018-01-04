@@ -6,7 +6,7 @@ config = {}
 config['datasets'] = {'mnist' : 'mnist', 'cifar' : 'cifar', 'imagenet' : 'imagenet'}
 
 # change this to change dataset used in application
-config['dataset_name'] = config['datasets']['cifar']
+config['dataset_name'] = config['datasets']['mnist']
 
 # put corresponding dataset in corresponding data_dir in project/datasets/dataset/data_dir
 DATA_DIR = os.path.join('datasets', config['dataset_name'], 'data_dir')
@@ -50,13 +50,14 @@ config['strides'] = 2
 config['decay_steps'] = 100000
 config['decay_base'] = 0.96
 config['se_r'] = 16
-config['use_se'] = True
+config['use_se'] = False
+config['log_every'] = 1000
 
 # file name for ploting
 used_se = '_'
 if (config['use_se']):
     used_se = '_SE_'
-PLOT_FILE = os.path.join(PLOT_TRAINING_SAVE_DIR, config['model'] + used_se + config['activation_fn'] + '_test.pdf')
+PLOT_FILE = os.path.join(PLOT_TRAINING_SAVE_DIR, config['model'] + used_se + config['activation_fn'] + '.pdf')
 
 # layers config
 config['fc_1_output'] = 256

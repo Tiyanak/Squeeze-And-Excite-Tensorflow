@@ -8,9 +8,13 @@ class CNN():
 
     def __init__(self):
 
-        self.model = model.Model()
+        with tf.device('/device:GPU:0'):
+            self.model = model.Model()
 
-        self.sess = tf.Session()
+        config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
+        config.gpu_options.per_process_gpu_memory_fraction = 0.4
+
+        self.sess = tf.Session(config=config)
 
     def train(self, train_x, train_y, valid_x, valid_y):
 
@@ -27,6 +31,8 @@ class CNN():
         max_epochs = constant.config['max_epochs']
         batch_size = constant.config['batch_size']
         num_batches = num_examples // batch_size
+        log_every = constant.config['log_every']
+        mean_time = []
 
         for epoch_num in range(1, max_epochs + 1):
 
@@ -47,16 +53,19 @@ class CNN():
                 _, loss_val, logits_val = ret_val # +weights
 
                 duration = time.time() - start_time
+                mean_time.append(duration)
 
-                if (step + 1) * batch_size % 2500 == 0:
+                if (step + 1) * batch_size % log_every == 0:
                     sec_per_batch = float(duration)
                     self.log_step(epoch_num, step, batch_size, num_batches * batch_size, loss_val, sec_per_batch)
-                    # util.draw_conv_filters(epoch=epoch_num, step=step, weights=conv1_weights, save_dir=constant.FILTERS_SAVE_DIR)
 
             print("EPOCH STATISTICS : ")
 
             train_loss, train_acc = self.validate(epoch_num, train_x, train_y, "Train")
             valid_loss, valid_acc = self.validate(epoch_num, valid_x, valid_y, "Validation")
+            print("Total epoch time training: {}".format(np.mean(mean_time)))
+
+            mean_time.clear()
 
             lr = self.sess.run([self.model.learning_rate])
 

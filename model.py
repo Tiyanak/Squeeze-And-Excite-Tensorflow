@@ -42,8 +42,6 @@ class Model:
         self.prediction = self.predict(self.logits)
         self.train_op, self.loss, self.accuracy, self.learning_rate = self.loss_fn(self.logits, self.Yoh)
 
-        # tf.summary missing here
-
     def loss_fn(self, logits, labels):
 
         loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels))
