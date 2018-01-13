@@ -7,6 +7,7 @@ import skimage as ski
 import skimage.io
 from sklearn.metrics import confusion_matrix
 from util import constant
+import tensorflow as tf
 
 def unpickle(file):
     fo = open(file, 'rb')
@@ -14,6 +15,10 @@ def unpickle(file):
     fo.close()
     return dict
 
+def pickle_save(data, file):
+    fo = open(file, 'wb')
+    pickle.dump(data, fo)
+    fo.close()
 
 def shuffle_data(data_x, data_y):
     indices = np.arange(data_x.shape[0])
@@ -107,3 +112,9 @@ def eval_perf_multi(Y, Y_):
     accuracy = np.trace(M) / np.sum(M)
 
     return accuracy, pr
+
+def _int64_feature(value):
+  return tf.train.Feature(int64_list=tf.train.Int64List(value=[value]))
+
+def _bytes_feature(value):
+  return tf.train.Feature(bytes_list=tf.train.BytesList(value=[value]))

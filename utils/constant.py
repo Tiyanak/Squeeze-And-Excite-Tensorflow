@@ -12,17 +12,17 @@ config['activation_functions'] = {'selu': layers.selu, 'relu': layers.relu}
 config['mnist_img_width'] = 28
 config['mnist_img_height'] = 28
 config['mnist_img_channel'] = 1
-config['cifar_img_width'] = 32
-config['cifar_img_height'] = 32
+config['cifar_img_width'] = 64
+config['cifar_img_height'] = 64
 config['cifar_img_channel'] = 3
 config['imagenet_img_width'] = 256
 config['imagenet_img_height'] = 256
 config['imagenet_img_channel'] = 3
 
 # choose dataset, model and activation
-config['dataset_name'] = config['datasets']['mnist']
+config['dataset_name'] = config['datasets']['cifar']
 config['model'] = config['models']['resnet50']
-config['activation_fn'] = 'selu'
+config['activation_fn'] = 'relu'
 
 # hiperparameters - free to change
 config['learning_rate'] = 1e-4
@@ -34,7 +34,7 @@ config['strides'] = 2
 config['decay_steps'] = 100000
 config['decay_base'] = 0.96
 config['se_r'] = 16
-config['use_se'] = True
+config['use_se'] = False
 config['log_every'] = 1000
 
 # layers config
@@ -52,6 +52,9 @@ DATA_DIR = os.path.join('datasets', config['dataset_name'], 'data_dir')
 SAVE_DIR = os.path.join('datasets', config['dataset_name'], 'save_dir')
 FILTERS_SAVE_DIR = os.path.join('datasets', config['dataset_name'], 'save_dir', 'filters')
 PLOT_TRAINING_SAVE_DIR = os.path.join('datasets', config['dataset_name'], 'save_dir', 'plot_training')
+CIFAR_DIR = os.path.join('datasets', 'cifar', 'data_dir_original')
+CIFAR_RESIZED_DIR = os.path.join('datasets', 'cifar', 'data_dir')
+CIFAR_TF_RECORDS_DIR = os.path.join('datasets', 'cifar', 'tf_records_dir')
 
 # file name for ploting
 used_se = '_'

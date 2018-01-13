@@ -1,5 +1,5 @@
 from datasets.AbstractDataset import AbstractDataset
-from util import constant, util
+from utils import constant, util
 import numpy as np
 import os
 

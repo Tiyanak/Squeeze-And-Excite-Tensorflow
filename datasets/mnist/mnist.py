@@ -1,6 +1,6 @@
 from tensorflow.examples.tutorials.mnist import input_data
 from datasets.AbstractDataset import AbstractDataset
-from util import constant
+from utils import constant
 
 
 class MnistDataset(AbstractDataset):

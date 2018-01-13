@@ -1,5 +1,5 @@
 from datasets.AbstractDataset import AbstractDataset
-from util import constant, util
+from utils import constant, util
 import numpy as np
 import os
 
@@ -16,36 +16,36 @@ class CifarDataset(AbstractDataset):
         height = constant.config['cifar_img_height']
         channel = constant.config['cifar_img_channel']
 
-        train_x = np.ndarray((0, width * height* channel), dtype=np.float32)
-        train_y = []
-        for i in range(1, 6):
+        self.train_x = np.ndarray((0, width * height * channel), dtype=np.float32)
+        self.train_y = []
+        for i in range(1, 3):
             subset = util.unpickle(os.path.join(constant.DATA_DIR, 'data_batch_%d' % i))
-            train_x = np.vstack((train_x, subset['data']))
-            train_y += subset['labels']
-        train_x = train_x.reshape((-1, channel, height, width)).transpose(0, 2, 3, 1)
-        train_y = np.array(train_y, dtype=np.int32)
+            self.train_x = np.vstack((self.train_x, subset['data'][0]))
+            self.train_y = np.concatenate((self.train_y, subset['labels']), axis=0)
+        self.train_x = self.train_x.reshape((-1, channel, height, width)).transpose(0, 2, 3, 1)
+        self.train_y = np.array(self.train_y, dtype=np.uint8)
 
         subset = util.unpickle(os.path.join(constant.DATA_DIR, 'test_batch'))
-        test_x = subset['data'].reshape((-1, channel, height, width)).transpose(0, 2, 3, 1).astype(np.float32)
-        test_y = np.array(subset['labels'], dtype=np.int32)
-        self.test_y = util.class_to_onehot(test_y)
+        self.test_x = subset['data'][0].reshape((-1, channel, height, width)).transpose(0, 2, 3, 1).astype(np.uint8)
+        self.test_y = np.array(subset['labels'], dtype=np.uint8)
+        self.test_y = util.class_to_onehot(self.test_y)
 
         valid_size = 5000
-        train_x, train_y = util.shuffle_data(train_x, train_y)
-        train_y = util.class_to_onehot(train_y)
+        self.train_x, self.train_y = util.shuffle_data(self.train_x, self.train_y)
+        self.train_y = util.class_to_onehot(self.train_y)
 
-        valid_x = train_x[:valid_size, ...]
-        self.valid_y = train_y[:valid_size, ...]
+        self.valid_x = self.train_x[:valid_size, ...]
+        self.valid_y = self.train_y[:valid_size, ...]
 
-        train_x = train_x[valid_size:, ...]
-        self.train_y = train_y[valid_size:, ...]
+        self.train_x = self.train_x[valid_size:, ...]
+        self.train_y = self.train_y[valid_size:, ...]
 
-        data_mean = train_x.mean((0, 1, 2))
-        data_std = train_x.std((0, 1, 2))
+        data_mean = self.train_x.mean((0, 1, 2))
+        data_std = self.train_x.std((0, 1, 2))
 
-        self.train_x = (train_x - data_mean) / data_std
-        self.valid_x = (valid_x - data_mean) / data_std
-        self.test_x = (test_x - data_mean) / data_std
+        self.train_x = (self.train_x - data_mean) / data_std
+        self.valid_x = (self.valid_x - data_mean) / data_std
+        self.test_x = (self.test_x - data_mean) / data_std
 
     def train_set(self):
 
