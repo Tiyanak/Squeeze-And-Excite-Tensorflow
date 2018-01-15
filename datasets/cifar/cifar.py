@@ -12,21 +12,21 @@ class CifarDataset(AbstractDataset):
 
     def __init_datasets__(self):
 
-        width = constant.config['cifar_img_width']
-        height = constant.config['cifar_img_height']
-        channel = constant.config['cifar_img_channel']
+        width = constant.config['cifar_32_img_width']
+        height = constant.config['cifar_32_img_height']
+        channel = constant.config['cifar_32_img_channel']
 
         self.train_x = np.ndarray((0, width * height * channel), dtype=np.float32)
-        self.train_y = []
-        for i in range(1, 3):
-            subset = util.unpickle(os.path.join(constant.DATA_DIR, 'data_batch_%d' % i))
-            self.train_x = np.vstack((self.train_x, subset['data'][0]))
+        self.train_y = np.ndarray((0, ))
+        for i in range(1, 6):
+            subset = util.unpickle(os.path.join(constant.CIFAR_DATA_DIR, 'data_batch_%d' % i))
+            self.train_x = np.vstack((self.train_x, subset['data']))
             self.train_y = np.concatenate((self.train_y, subset['labels']), axis=0)
         self.train_x = self.train_x.reshape((-1, channel, height, width)).transpose(0, 2, 3, 1)
         self.train_y = np.array(self.train_y, dtype=np.uint8)
 
-        subset = util.unpickle(os.path.join(constant.DATA_DIR, 'test_batch'))
-        self.test_x = subset['data'][0].reshape((-1, channel, height, width)).transpose(0, 2, 3, 1).astype(np.uint8)
+        subset = util.unpickle(os.path.join(constant.CIFAR_DATA_DIR, 'test_batch'))
+        self.test_x = subset['data'].reshape((-1, channel, height, width)).transpose(0, 2, 3, 1).astype(np.uint8)
         self.test_y = np.array(subset['labels'], dtype=np.uint8)
         self.test_y = util.class_to_onehot(self.test_y)
 

@@ -4,7 +4,7 @@ import os
 config = {}
 
 # implemented datasets, models and activations
-config['datasets'] = {'mnist' : 'mnist', 'cifar' : 'cifar', 'imagenet' : 'imagenet'}
+config['datasets'] = {'mnist' : 'mnist', 'cifar_32' : 'cifar_32', 'cifar_128' : 'cifar_128', 'imagenet' : 'imagenet'}
 config['models'] = {'custom_model' : 'custom_model', 'resnet50' : 'resnet50'}
 config['activation_functions'] = {'selu': layers.selu, 'relu': layers.relu}
 
@@ -12,16 +12,19 @@ config['activation_functions'] = {'selu': layers.selu, 'relu': layers.relu}
 config['mnist_img_width'] = 28
 config['mnist_img_height'] = 28
 config['mnist_img_channel'] = 1
-config['cifar_img_width'] = 128
-config['cifar_img_height'] = 128
-config['cifar_img_channel'] = 3
+config['cifar_32_img_width'] = 32
+config['cifar_32_img_height'] = 32
+config['cifar_32_img_channel'] = 3
+config['cifar_128_img_width'] = 128
+config['cifar_128_img_height'] = 128
+config['cifar_128_img_channel'] = 3
 config['imagenet_img_width'] = 256
 config['imagenet_img_height'] = 256
 config['imagenet_img_channel'] = 3
 
 # choose dataset, model and activation
-config['dataset_name'] = config['datasets']['mnist']
-config['model'] = config['models']['custom_model']
+config['dataset_name'] = config['datasets']['cifar_128']
+config['model'] = config['models']['resnet50']
 config['activation_fn'] = 'relu'
 
 # hiperparameters - free to change
