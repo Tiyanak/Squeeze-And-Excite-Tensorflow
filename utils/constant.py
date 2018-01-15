@@ -20,7 +20,7 @@ config['imagenet_img_height'] = 256
 config['imagenet_img_channel'] = 3
 
 # choose dataset, model and activation
-config['dataset_name'] = config['datasets']['cifar']
+config['dataset_name'] = config['datasets']['mnist']
 config['model'] = config['models']['resnet50']
 config['activation_fn'] = 'relu'
 
