@@ -1,5 +1,5 @@
 import tensorflow as tf
-import tensorflow.contrib.layers as tf_layers
+import numpy as np
 
 def selu(x):
 
@@ -37,14 +37,11 @@ def global_pool(input, pool_size=None, strides=1, name="global_pool2d", padding=
 
 def flatten(input, name="flatten"):
 
-    return tf_layers.flatten(input, scope=name)
-
+    return tf.reshape(input, shape=[tf.shape(input)[0], np.prod(input.shape[1:]).value], name=name)
 
 def fc(input, output_shape, activation_fn, name="fc"):
 
-    output = tf_layers.fully_connected(input, output_shape, activation_fn=activation_fn, scope=name)
-
-    return output
+    return tf.layers.dense(input, output_shape, activation=activation_fn, name=name)
 
 def batchNormalization(input, axis=-1):
 

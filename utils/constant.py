@@ -21,7 +21,7 @@ config['imagenet_img_channel'] = 3
 
 # choose dataset, model and activation
 config['dataset_name'] = config['datasets']['mnist']
-config['model'] = config['models']['resnet50']
+config['model'] = config['models']['custom_model']
 config['activation_fn'] = 'relu'
 
 # hiperparameters - free to change

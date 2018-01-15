@@ -1,6 +1,6 @@
 import tensorflow as tf
 import layers as layers
-from utils import util, constant
+from utils import constant
 
 class Model:
 
