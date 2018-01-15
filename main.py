@@ -1,32 +1,32 @@
-from util import constant
-from datasets.AbstractDataset import AbstractDataset
+from utils import constant
 from datasets.cifar.cifar import CifarDataset
-from datasets.imagenet.imagenet import ImagenetDataset
 from datasets.mnist.mnist import MnistDataset
-import cnn
+from cnn import CNN
+from cnn_records import CNN_Records
 
 def main():
 
     dataset_name = constant.config['dataset_name']
-    dataset = AbstractDataset
 
     if dataset_name == 'mnist':
+
         dataset = MnistDataset()
-    elif dataset_name == 'imagenet':
-        dataset = ImagenetDataset()
+        trainer = CNN()
+        trainer.train(dataset)
+
     elif dataset_name == 'cifar':
+
+        trainer = CNN_Records()
+        trainer.train()
+
+    elif dataset_name == 'imagenet':
+
         dataset = CifarDataset()
+        trainer = CNN()
+        trainer.train(dataset)
+
     else:
         raise ValueError(dataset_name)
-
-    train_x, train_y = dataset.train_set()
-    validate_x, validate_y = dataset.validate_set()
-    test_x, test_y = dataset.test_set()
-
-    trainer = cnn.CNN()
-
-    trainer.train(train_x, train_y, validate_x, validate_y)
-    test_yp = trainer.predict(test_x)
 
 if __name__ == '__main__':
     main()

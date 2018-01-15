@@ -6,7 +6,7 @@ import math
 import skimage as ski
 import skimage.io
 from sklearn.metrics import confusion_matrix
-from util import constant
+from utils import constant
 import tensorflow as tf
 
 def unpickle(file):

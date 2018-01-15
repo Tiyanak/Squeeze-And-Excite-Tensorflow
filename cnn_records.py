@@ -3,22 +3,26 @@ from utils import constant, util
 import tensorflow as tf
 import time
 import model
+from TFRecordsReader import TFRecordsReader
 
-class CNN():
+class CNN_Records():
 
     def __init__(self):
 
         with tf.device('/device:GPU:0'):
             self.model = model.Model()
+            self.tfTrainReader = TFRecordsReader()
+            self.tfTrainEvalReader = TFRecordsReader()
+            self.tfValidEvalReader = TFRecordsReader()
 
         config = tf.ConfigProto(allow_soft_placement=True, log_device_placement=True)
         config.gpu_options.per_process_gpu_memory_fraction = 0.4
 
         self.sess = tf.Session(config=config)
 
-    def train(self, dataset):
+    def train(self):
 
-        self.sess.run(tf.global_variables_initializer())
+        self.sess.as_default()
 
         plot_data = {}
         plot_data['train_loss'] = []
@@ -27,30 +31,36 @@ class CNN():
         plot_data['valid_acc'] = []
         plot_data['lr'] = []
 
-        num_examples = dataset.train_x.shape[0]
+        num_examples = 45000
         max_epochs = constant.config['max_epochs']
         batch_size = constant.config['batch_size']
         num_batches = num_examples // batch_size
         log_every = constant.config['log_every']
         mean_time = []
 
-        for epoch_num in range(1, max_epochs + 1):
+        self.tfTrainReader.create_iterator("train", max_epochs, batch_size, num_batches * batch_size)
+        self.tfTrainEvalReader.create_iterator("train", 1, batch_size, num_batches * batch_size)
+        self.tfValidEvalReader.create_iterator("valid", 1, batch_size, num_batches * batch_size)
 
-            dataset.train_x, dataset.train_y = util.shuffle_data(dataset.train_x, dataset.train_y)
+        init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
+        self.sess.run(init_op)
+
+        coord = tf.train.Coordinator()
+        threads = tf.train.start_queue_runners(sess=self.sess, coord=coord)
+
+        for epoch_num in range(1, max_epochs + 1):
 
             for step in range(num_batches):
 
-                offset = step * batch_size
-
-                batch_x = dataset.train_x[offset:(offset + batch_size), ...]
-                batch_y = dataset.train_y[offset:(offset + batch_size)]
+                batch_x, batch_y = self.sess.run([self.tfTrainReader.images, self.tfTrainReader.labels])
+                batch_y = util.class_to_onehot(batch_y)
 
                 feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
                 start_time = time.time()
 
-                run_ops = [self.model.train_op, self.model.loss, self.model.logits] # +self.weights
+                run_ops = [self.model.train_op, self.model.loss, self.model.logits]
                 ret_val = self.sess.run(run_ops, feed_dict=feed_dict)
-                _, loss_val, logits_val = ret_val # +weights
+                _, loss_val, logits_val = ret_val
 
                 duration = time.time() - start_time
                 mean_time.append(duration)
@@ -61,8 +71,8 @@ class CNN():
 
             print("EPOCH STATISTICS : ")
 
-            train_loss, train_acc = self.validate(epoch_num, dataset.train_x, dataset.train_y, "Train")
-            valid_loss, valid_acc = self.validate(epoch_num, dataset.valid_x, dataset.valid_y, "Validation")
+            train_loss, train_acc = self.validate(epoch_num, self.tfTrainEvalReader, "train")
+            valid_loss, valid_acc = self.validate(epoch_num, self.tfValidEvalReader, "valid")
             print("Total epoch time training: {}".format(np.mean(mean_time)))
 
             mean_time.clear()
@@ -75,7 +85,12 @@ class CNN():
             plot_data['valid_acc'] += [valid_acc]
             plot_data['lr'] += [lr]
 
-        util.plot_training_progress(constant.PLOT_TRAINING_SAVE_DIR, plot_data)
+            util.plot_training_progress(constant.PLOT_TRAINING_SAVE_DIR, plot_data)
+
+        coord.request_stop()
+
+        coord.join(threads)
+        self.sess.close()
 
     def predict(self, X):
 
@@ -88,21 +103,22 @@ class CNN():
         format_str = 'epoch %d, step %d / %d, loss = %.2f (%.3f sec/batch)'
         print(format_str % (epoch, (step_batch + 1) * batch_size, total_batches, loss, sec_per_batch))
 
-    def validate(self, epoch, inputs, labels, dataset_type="Unknown"):
+    def validate(self, epoch, reader, dataset_type="Unknown"):
 
-        num_examples = inputs.shape[0]
+        num_examples = 45000 if dataset_type == 'train' else 5000
         batch_size = constant.config['batch_size']
         num_batches = num_examples // batch_size
 
         losses = []
         eval_preds = []
 
+        labels = np.ndarray((0,), dtype=np.int64)
+
         for step in range(num_batches):
 
-            offset = step * batch_size
-
-            batch_x = inputs[offset:(offset + batch_size), ...]
-            batch_y = labels[offset:(offset + batch_size)]
+            batch_x, batch_y = self.sess.run([reader.images, reader.labels])
+            batch_y = util.class_to_onehot(batch_y)
+            labels =  np.concatenate((labels, batch_y), axis=0)
 
             feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
             run_ops = [self.model.loss, self.model.prediction]
@@ -119,4 +135,4 @@ class CNN():
         acc, pr = util.eval_perf_multi(np.argmax(labels, axis=1), np.argmax(eval_preds, axis=1))
         print("{} error: epoch {} loss={} accuracy={}".format(dataset_type, epoch, total_loss, acc))
 
-        return loss, acc
+        return total_loss, acc

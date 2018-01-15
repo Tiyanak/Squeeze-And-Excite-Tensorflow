@@ -1,6 +1,6 @@
 import tensorflow as tf
 import layers as layers
-from util import util, constant
+from utils import util, constant
 
 class Model:
 
@@ -23,7 +23,7 @@ class Model:
         self.activation_fn = constant.config['activation_functions'][constant.config['activation_fn']]
 
         self.X = tf.placeholder(name='image', dtype=tf.float32, shape=[None, self.input_w, self.input_h, self.input_c])
-        self.Yoh = tf.placeholder(name='label', dtype=tf.float32, shape=[None, self.num_class])
+        self.Yoh = tf.placeholder(name='label', dtype=tf.uint8, shape=[None, self.num_class])
 
         self.global_step = tf.Variable(0, trainable=False)
 

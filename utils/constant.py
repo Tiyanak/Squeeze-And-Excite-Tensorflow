@@ -12,8 +12,8 @@ config['activation_functions'] = {'selu': layers.selu, 'relu': layers.relu}
 config['mnist_img_width'] = 28
 config['mnist_img_height'] = 28
 config['mnist_img_channel'] = 1
-config['cifar_img_width'] = 64
-config['cifar_img_height'] = 64
+config['cifar_img_width'] = 128
+config['cifar_img_height'] = 128
 config['cifar_img_channel'] = 3
 config['imagenet_img_width'] = 256
 config['imagenet_img_height'] = 256
@@ -52,9 +52,14 @@ DATA_DIR = os.path.join('datasets', config['dataset_name'], 'data_dir')
 SAVE_DIR = os.path.join('datasets', config['dataset_name'], 'save_dir')
 FILTERS_SAVE_DIR = os.path.join('datasets', config['dataset_name'], 'save_dir', 'filters')
 PLOT_TRAINING_SAVE_DIR = os.path.join('datasets', config['dataset_name'], 'save_dir', 'plot_training')
-CIFAR_DIR = os.path.join('datasets', 'cifar', 'data_dir_original')
-CIFAR_RESIZED_DIR = os.path.join('datasets', 'cifar', 'data_dir')
+
+CIFAR_DATA_DIR = os.path.join('datasets', 'cifar', 'data_dir')
+CIFAR_DATA_DIR_128 = os.path.join('datasets', 'cifar', 'data_dir_128')
 CIFAR_TF_RECORDS_DIR = os.path.join('datasets', 'cifar', 'tf_records_dir')
+
+CIFAR_FILE_DICT = {'train' : [os.path.join(CIFAR_TF_RECORDS_DIR, 'train_batch_%d.tfrecords' % x) for x in range(1, 6)],
+                   'valid' : [os.path.join(CIFAR_TF_RECORDS_DIR, 'valid_batch.tfrecords')],
+                   'test' : [os.path.join(CIFAR_TF_RECORDS_DIR, 'test_batch.tfrecords')]}
 
 # file name for ploting
 used_se = '_'
