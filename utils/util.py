@@ -1,7 +1,9 @@
 import os
 import pickle
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('agg')
+import pylab as plt
 import math
 import skimage as ski
 import skimage.io
@@ -66,7 +68,7 @@ def draw_image(img, mean, std):
 
 
 def plot_training_progress(save_dir, data):
-    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2, figsize=(16, 8))
+    fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 
     linewidth = 2
     legend_size = 10
