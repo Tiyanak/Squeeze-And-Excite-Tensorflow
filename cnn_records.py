@@ -9,7 +9,7 @@ class CNN_Records():
 
     def __init__(self):
 
-        with tf.device('/device:GPU:0'):
+        with tf.device('/device:GPU:1'):
             self.model = model.Model()
             self.tfTrainReader = TFRecordsReader()
             self.tfTrainEvalReader = TFRecordsReader()
@@ -53,7 +53,7 @@ class CNN_Records():
             for step in range(num_batches):
 
                 batch_x, batch_y = self.sess.run([self.tfTrainReader.images, self.tfTrainReader.labels])
-                batch_y = util.class_to_onehot(batch_y)
+                batch_y = util.class_to_onehot(batch_y, constant.config['num_class'])
 
                 feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
                 start_time = time.time()
@@ -117,7 +117,7 @@ class CNN_Records():
         for step in range(num_batches):
 
             batch_x, batch_y = self.sess.run([reader.images, reader.labels])
-            batch_y = util.class_to_onehot(batch_y)
+            batch_y = util.class_to_onehot(batch_y, constant.config['num_class'])
             labels =  np.concatenate((labels, batch_y), axis=0)
 
             feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}

@@ -28,8 +28,8 @@ def shuffle_data(data_x, data_y):
     return shuffled_data_x, shuffled_data_y
 
 
-def class_to_onehot(Y):
-    Yoh = np.zeros((len(Y), max(Y) + 1))
+def class_to_onehot(Y, max_value):
+    Yoh = np.zeros((len(Y), max_value))
     Yoh[range(len(Y)), Y] = 1
     return Yoh
 

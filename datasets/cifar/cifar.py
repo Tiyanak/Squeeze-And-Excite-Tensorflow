@@ -28,11 +28,11 @@ class CifarDataset(AbstractDataset):
         subset = util.unpickle(os.path.join(constant.CIFAR_DATA_DIR, 'test_batch'))
         self.test_x = subset['data'].reshape((-1, channel, height, width)).transpose(0, 2, 3, 1).astype(np.uint8)
         self.test_y = np.array(subset['labels'], dtype=np.uint8)
-        self.test_y = util.class_to_onehot(self.test_y)
+        self.test_y = util.class_to_onehot(self.test_y, 10)
 
         valid_size = 5000
         self.train_x, self.train_y = util.shuffle_data(self.train_x, self.train_y)
-        self.train_y = util.class_to_onehot(self.train_y)
+        self.train_y = util.class_to_onehot(self.train_y, 10)
 
         self.valid_x = self.train_x[:valid_size, ...]
         self.valid_y = self.train_y[:valid_size, ...]

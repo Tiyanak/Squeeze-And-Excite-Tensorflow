@@ -21,6 +21,11 @@ config['cifar_128_img_channel'] = 3
 config['imagenet_img_width'] = 256
 config['imagenet_img_height'] = 256
 config['imagenet_img_channel'] = 3
+config['mnist_classes'] = 10
+config['cifar_32_classes'] = 10
+config['cifar_128_classes'] = 10
+config['imagenet_classes'] = 1000
+
 
 # choose dataset, model and activation
 config['dataset_name'] = config['datasets']['cifar_128']
@@ -29,7 +34,7 @@ config['activation_fn'] = 'relu'
 
 # hiperparameters - free to change
 config['learning_rate'] = 1e-4
-config['batch_size'] = 50
+config['batch_size'] = 10
 config['max_epochs'] = 10
 config['output_shape'] = 10
 config['pool_size'] = [2, 2]
@@ -43,7 +48,7 @@ config['log_every'] = 1000
 # layers config
 config['fc_1_output'] = 256
 config['fc_2_output'] = 128
-config['num_class'] = 10 # same as output of last fc layer
+config['num_class'] = config[config['dataset_name'] + '_classes'] # same as output of last fc layer
 
 # this is used in application as current active dataset image config - dont touch
 config['img_width'] = config[config['dataset_name'] + '_img_width']
