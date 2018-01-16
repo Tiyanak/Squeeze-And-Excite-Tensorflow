@@ -117,7 +117,6 @@ class CNN_Records():
         for step in range(num_batches):
 
             batch_x, batch_y = self.sess.run([reader.images, reader.labels])
-            batch_y = util.class_to_onehot(batch_y, constant.config['num_class'])
             labels =  np.concatenate((labels, batch_y), axis=0)
 
             feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
@@ -131,6 +130,8 @@ class CNN_Records():
 
         eval_preds = np.vstack(eval_preds)
         total_loss = np.mean(losses)
+
+        labels = util.class_to_onehot(labels, constant.config['num_class'])
 
         acc, pr = util.eval_perf_multi(np.argmax(labels, axis=1), np.argmax(eval_preds, axis=1))
         print("{} error: epoch {} loss={} accuracy={}".format(dataset_type, epoch, total_loss, acc))
