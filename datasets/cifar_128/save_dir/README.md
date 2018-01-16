@@ -1,1 +1,0 @@
-plot results for cifar images 128x128x3
