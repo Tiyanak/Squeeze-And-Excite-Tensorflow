@@ -75,7 +75,7 @@ class CNN():
             plot_data['valid_acc'] += [valid_acc]
             plot_data['lr'] += [lr]
 
-        util.plot_training_progress(constant.PLOT_TRAINING_SAVE_DIR, plot_data)
+        util.plot_training_progress(plot_data)
 
     def predict(self, X):
 

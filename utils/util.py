@@ -67,7 +67,7 @@ def draw_image(img, mean, std):
     ski.io.show()
 
 
-def plot_training_progress(save_dir, data):
+def plot_training_progress(data):
     fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
 
     linewidth = 2
@@ -97,6 +97,17 @@ def plot_training_progress(save_dir, data):
 
     print('Plotting in: ', constant.PLOT_FILE)
     plt.savefig(constant.PLOT_FILE)
+
+    with open(constant.EVAL_RESULTS_FILE, 'w') as f:
+
+        line = 'epoch_num,train_loss,valid_loss,train_acc,valid_acc,lr,epoch_time\n'
+        f.write(line)
+
+        for i in range(0, num_points):
+            line = data['train_loss'] + ',' + data['valid_loss'] + ',' + data['train_acc'] + ',' + \
+                   data['valid_acc'] + ',' + data['lr'] + ',' + data['epoh_time'] + '\n'
+
+            f.write(line)
 
 def eval_perf_multi(Y, Y_):
     pr = []

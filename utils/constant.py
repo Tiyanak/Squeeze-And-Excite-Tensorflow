@@ -74,5 +74,6 @@ used_se = '_'
 if (config['use_se']):
     used_se = '_SE_'
 PLOT_FILE = os.path.join(PLOT_TRAINING_SAVE_DIR, config['model'] + used_se + config['activation_fn'] + '.pdf')
+EVAL_RESULTS_FILE = os.path.join(PLOT_TRAINING_SAVE_DIR, config['model'] + used_se + config['activation_fn'] + '.csv')
 
 
