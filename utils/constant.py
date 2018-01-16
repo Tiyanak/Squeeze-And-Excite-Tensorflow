@@ -34,7 +34,7 @@ config['activation_fn'] = 'relu'
 
 # hiperparameters - free to change
 config['learning_rate'] = 1e-4
-config['batch_size'] = 30
+config['batch_size'] = 50
 config['max_epochs'] = 10
 config['output_shape'] = 10
 config['pool_size'] = [2, 2]
