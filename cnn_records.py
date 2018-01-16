@@ -118,6 +118,7 @@ class CNN_Records():
 
             batch_x, batch_y = self.sess.run([reader.images, reader.labels])
             labels =  np.concatenate((labels, batch_y), axis=0)
+            batch_y = util.class_to_onehot(batch_y, constant.config['num_class'])
 
             feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
             run_ops = [self.model.loss, self.model.prediction]
