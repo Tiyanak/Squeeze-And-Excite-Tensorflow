@@ -30,13 +30,13 @@ class CNN_Records():
         plot_data['train_acc'] = []
         plot_data['valid_acc'] = []
         plot_data['lr'] = []
+        plot_data['epoch_time'] = []
 
         num_examples = 45000
         max_epochs = constant.config['max_epochs']
         batch_size = constant.config['batch_size']
         num_batches = num_examples // batch_size
         log_every = constant.config['log_every']
-        mean_time = []
 
         self.tfTrainReader.create_iterator("train", max_epochs, batch_size, num_batches * batch_size)
         self.tfTrainEvalReader.create_iterator("train", 1, batch_size, num_batches * batch_size)
@@ -63,7 +63,7 @@ class CNN_Records():
                 _, loss_val, logits_val = ret_val
 
                 duration = time.time() - start_time
-                mean_time.append(duration)
+                plot_data['epoch_time'] += [duration]
 
                 if (step + 1) * batch_size % log_every == 0:
                     sec_per_batch = float(duration)
@@ -73,9 +73,7 @@ class CNN_Records():
 
             train_loss, train_acc = self.validate(epoch_num, self.tfTrainEvalReader, "train")
             valid_loss, valid_acc = self.validate(epoch_num, self.tfValidEvalReader, "valid")
-            print("Total epoch time training: {}".format(np.mean(mean_time)))
-
-            mean_time.clear()
+            print("Total epoch time training: {}".format(duration))
 
             lr = self.sess.run([self.model.learning_rate])
 

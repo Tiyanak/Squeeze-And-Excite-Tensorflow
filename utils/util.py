@@ -104,8 +104,8 @@ def plot_training_progress(data):
         f.write(line)
 
         for i in range(0, num_points):
-            line = data['train_loss'] + ',' + data['valid_loss'] + ',' + data['train_acc'] + ',' + \
-                   data['valid_acc'] + ',' + data['lr'] + ',' + data['epoh_time'] + '\n'
+            line = str(i+1) + data['train_loss'][i] + ',' + data['valid_loss'][i] + ',' + data['train_acc'][i] + ',' + \
+                   data['valid_acc'][i] + ',' + data['lr'][i] + ',' + data['epoch_time'][i] + '\n'
 
             f.write(line)
 
