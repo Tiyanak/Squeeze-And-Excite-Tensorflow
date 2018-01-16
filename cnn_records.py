@@ -39,8 +39,8 @@ class CNN_Records():
         log_every = constant.config['log_every']
 
         self.tfTrainReader.create_iterator("train", max_epochs, batch_size, num_batches * batch_size)
-        self.tfTrainEvalReader.create_iterator("train", 1, batch_size, num_batches * batch_size)
-        self.tfValidEvalReader.create_iterator("valid", 1, batch_size, num_batches * batch_size)
+        self.tfTrainEvalReader.create_iterator("train", max_epochs, batch_size, num_batches * batch_size)
+        self.tfValidEvalReader.create_iterator("valid", max_epochs, batch_size, num_batches * batch_size)
 
         init_op = tf.group(tf.global_variables_initializer(), tf.local_variables_initializer())
         self.sess.run(init_op)
@@ -49,6 +49,8 @@ class CNN_Records():
         threads = tf.train.start_queue_runners(sess=self.sess, coord=coord)
 
         for epoch_num in range(1, max_epochs + 1):
+
+            epoch_start_time = time.time()
 
             for step in range(num_batches):
 
@@ -63,7 +65,6 @@ class CNN_Records():
                 _, loss_val, logits_val = ret_val
 
                 duration = time.time() - start_time
-                plot_data['epoch_time'] += [duration]
 
                 if (step + 1) * batch_size % log_every == 0:
                     sec_per_batch = float(duration)
@@ -71,9 +72,12 @@ class CNN_Records():
 
             print("EPOCH STATISTICS : ")
 
+            epoch_time = time.time() - epoch_start_time
+            plot_data['epoch_time'] += [epoch_time]
+
             train_loss, train_acc = self.validate(epoch_num, self.tfTrainEvalReader, "train")
             valid_loss, valid_acc = self.validate(epoch_num, self.tfValidEvalReader, "valid")
-            print("Total epoch time training: {}".format(duration))
+            print("Total epoch time training: {}".format(epoch_time))
 
             lr = self.sess.run([self.model.learning_rate])
 

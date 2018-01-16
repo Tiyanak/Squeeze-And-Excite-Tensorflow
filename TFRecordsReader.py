@@ -12,7 +12,7 @@ class TFRecordsReader():
         self.feature = {dataset_type + '/image': tf.FixedLenFeature([], tf.string),
                    dataset_type + '/label': tf.FixedLenFeature([], tf.int64)}
 
-        self.filename_queue = tf.train.string_input_producer(self.fileDict[dataset_type], num_epochs=num_epochs)
+        self.filename_queue = tf.train.string_input_producer(self.fileDict[dataset_type], shuffle=True, num_epochs=num_epochs)
 
         self.reader = tf.TFRecordReader()
         _, ser_example = self.reader.read(self.filename_queue)
