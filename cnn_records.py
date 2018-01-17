@@ -9,7 +9,7 @@ class CNN_Records():
 
     def __init__(self):
 
-        with tf.device('/device:GPU:1'):
+        with tf.device('/device:GPU:0'):
             self.model = model.Model()
             self.tfTrainReader = TFRecordsReader()
             self.tfTrainEvalReader = TFRecordsReader()
@@ -115,7 +115,6 @@ class CNN_Records():
 
         losses = []
         eval_preds = np.ndarray((0,), dtype=np.int64)
-
         labels = np.ndarray((0,), dtype=np.int64)
 
         for step in range(num_batches):
