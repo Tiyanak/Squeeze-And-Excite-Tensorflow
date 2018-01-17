@@ -70,10 +70,10 @@ class CNN_Records():
                     sec_per_batch = float(duration)
                     self.log_step(epoch_num, step, batch_size, num_batches * batch_size, loss_val, sec_per_batch)
 
-            print("EPOCH STATISTICS : ")
-
             epoch_time = time.time() - epoch_start_time
             plot_data['epoch_time'] += [epoch_time]
+
+            print("EPOCH STATISTICS : ")
 
             train_loss, train_acc = self.validate(epoch_num, self.tfTrainEvalReader, "train")
             valid_loss, valid_acc = self.validate(epoch_num, self.tfValidEvalReader, "valid")
@@ -112,31 +112,28 @@ class CNN_Records():
         num_batches = num_examples // batch_size
 
         losses = []
-        eval_preds = []
+        eval_preds = np.ndarray((0,), dtype=np.int64)
 
         labels = np.ndarray((0,), dtype=np.int64)
 
         for step in range(num_batches):
 
+            if (step + 1) * batch_size % constant.config['log_every'] == 0:
+                print("Evaluating {}, done: {}/{}".format(dataset_type, (step + 1) * batch_size, num_batches * batch_size))
+
             batch_x, batch_y = self.sess.run([reader.images, reader.labels])
-            labels =  np.concatenate((labels, batch_y), axis=0)
+            labels = np.concatenate((labels, batch_y), axis=0)
             batch_y = util.class_to_onehot(batch_y, constant.config['num_class'])
 
-            feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
-            run_ops = [self.model.loss, self.model.prediction]
-
-            ret_val = self.sess.run(run_ops, feed_dict=feed_dict)
-            loss, preds = ret_val
+            loss, preds = self.sess.run([self.model.loss, self.model.prediction], feed_dict={self.model.X: batch_x, self.model.Yoh: batch_y})
 
             losses.append(loss)
-            eval_preds.append(preds)
+            eval_preds = np.concatenate((eval_preds, np.argmax(preds, axis=1)), axis=0)
 
         eval_preds = np.vstack(eval_preds)
         total_loss = np.mean(losses)
 
-        labels = util.class_to_onehot(labels, constant.config['num_class'])
-
-        acc, pr = util.eval_perf_multi(np.argmax(labels, axis=1), np.argmax(eval_preds, axis=1))
+        acc, pr = util.eval_perf_multi(labels, eval_preds)
         print("{} error: epoch {} loss={} accuracy={}".format(dataset_type, epoch, total_loss, acc))
 
         return total_loss, acc
