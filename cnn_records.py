@@ -59,11 +59,10 @@ class CNN_Records():
                 batch_x, batch_y = self.sess.run([self.tfTrainReader.images, self.tfTrainReader.labels])
                 batch_y = util.class_to_onehot(batch_y, constant.config['num_class'])
 
-                feed_dict = {self.model.X: batch_x, self.model.Yoh: batch_y}
                 start_time = time.time()
 
-                run_ops = [self.model.train_op, self.model.loss, self.model.logits]
-                ret_val = self.sess.run(run_ops, feed_dict=feed_dict)
+                ret_val = self.sess.run([self.model.train_op, self.model.loss, self.model.logits],
+                                        feed_dict={self.model.X: batch_x, self.model.Yoh: batch_y})
                 _, loss_val, logits_val = ret_val
 
                 duration = time.time() - start_time
