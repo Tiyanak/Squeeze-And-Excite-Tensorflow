@@ -132,7 +132,6 @@ class CNN_Records():
             losses.append(loss)
             eval_preds = np.concatenate((eval_preds, np.argmax(preds, axis=1)), axis=0)
 
-        eval_preds = np.vstack(eval_preds)
         total_loss = np.mean(losses)
 
         acc, pr = util.eval_perf_multi(labels, eval_preds)
