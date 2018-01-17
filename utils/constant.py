@@ -34,8 +34,8 @@ config['activation_fn'] = 'relu'
 
 # hiperparameters - free to change
 config['learning_rate'] = 1e-4
-config['batch_size'] = 50
-config['max_epochs'] = 10
+config['batch_size'] = 10
+config['max_epochs'] = 15
 config['output_shape'] = 10
 config['pool_size'] = [2, 2]
 config['strides'] = 2
@@ -43,7 +43,7 @@ config['decay_steps'] = 100000
 config['decay_base'] = 0.96
 config['se_r'] = 16
 config['use_se'] = False
-config['log_every'] = 1000
+config['log_every'] = 2500
 
 # layers config
 config['fc_1_output'] = 256

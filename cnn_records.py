@@ -48,6 +48,8 @@ class CNN_Records():
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(sess=self.sess, coord=coord)
 
+        print("Training is starting right now!")
+
         for epoch_num in range(1, max_epochs + 1):
 
             epoch_start_time = time.time()
