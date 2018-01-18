@@ -42,7 +42,7 @@ config['strides'] = 2
 config['decay_steps'] = 100000
 config['decay_base'] = 0.96
 config['se_r'] = 16
-config['use_se'] = False
+config['use_se'] = True
 config['log_every'] = 1000
 
 # layers config
