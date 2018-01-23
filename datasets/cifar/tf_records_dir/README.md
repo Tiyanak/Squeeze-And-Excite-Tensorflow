@@ -1,0 +1,1 @@
+CIFAR-10 as tensorflow .tfrecords dataset size of 128x128x3

@@ -1,0 +1,1 @@
+CIFAR-10 original dataset as 32x32x3

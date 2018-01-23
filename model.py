@@ -135,8 +135,8 @@ class Model:
             net += [layers.flatten(net[-1], name="flatten")]
 
             if constant.config['dataset_name'] != 'imagenet':
-                    net += [layers.fc(net[-1], 512, activation_fn=activation_fn, name="fc_1")]
-                    net += [layers.fc(net[-1], 256, activation_fn=activation_fn, name="fc_2")]
+                    net += [layers.fc(net[-1], self.fc_1_output, activation_fn=activation_fn, name="fc_1")]
+                    net += [layers.fc(net[-1], self.fc_2_output, activation_fn=activation_fn, name="fc_2")]
                     net += [layers.fc(net[-1], self.num_class, activation_fn=None, name="fc_3")]
             else:
                 net += [layers.fc(net[-1], 1000, activation_fn=None, name="fc_1000")]

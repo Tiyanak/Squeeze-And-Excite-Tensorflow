@@ -1,0 +1,1 @@
+CIFAR-10 resized as 64x64x3

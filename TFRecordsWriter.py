@@ -2,7 +2,6 @@ import tensorflow as tf
 from utils import util, constant
 import numpy as np
 import os
-import matplotlib.pyplot as plt
 
 class TFRecordsWriter():
 
