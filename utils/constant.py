@@ -30,7 +30,7 @@ config['imagenet_classes'] = 1000
 # choose dataset, model and activation
 config['dataset_name'] = config['datasets']['cifar_128']
 config['model'] = config['models']['resnet50']
-config['activation_fn'] = 'relu'
+config['activation_fn'] = 'selu'
 
 # hiperparameters - free to change
 config['learning_rate'] = 1e-4
@@ -43,7 +43,7 @@ config['decay_steps'] = 100000
 config['decay_base'] = 0.96
 config['se_r'] = 16
 config['use_se'] = True
-config['log_every'] = 1000
+config['log_every'] = 10
 
 # layers config
 config['fc_1_output'] = 256
